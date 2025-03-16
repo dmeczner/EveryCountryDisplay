@@ -1,5 +1,7 @@
 Világ országai programozási feladat
+
 Feladatvégzésre vonatkozó szabályok
+
 •	A feladatvégzés során (a fejlesztői gyakorlatnak megfelelően) szabadon használható az Internet vagy egyéb írásos forrás, viszont nem megengedett mástól segítséget kérni.
 •	Az alkalmazást C# nyelven kell kidolgozni, a használt keretrendszert (Blazor, MAUI, ASP.NET stb.) a pályázó szabadon megválaszthatja.
 •	A feladat megoldása során TDD módszertant és unit teszteket nem várunk el.
@@ -8,9 +10,12 @@ Feladatvégzésre vonatkozó szabályok
 •	A képernyőkép csak illusztrációnak készült. A UI kialakítása lehet nagyon egyszerű, egy designos / csillogó megjelenés nem elvárás.
 •	A kidolgozás során a lenti fejezetben meghatározott prioritási sorrendben érdemes haladni.
 •	Az elkészült forráskódót a jelöltnek – a 4 órás feladatvégzési idő végén – el kell küldeni a groma.istvandr@sdadms.hu e-mail címre.
+
 A feladat specifikációja
+
 A megvalósítandó feladat egy országnyilvántartást vizuálisan megjelenítő egyképernyős webalkalmazás. Az alkalmazás induláskor letölti az alábbi nyilvánosan elérhető JSON REST szolgáltatás segítségével a rendszer alapját képző adatbázist:
 https://restcountries.com/v3.1/all
+
 A nyilvántartásban szereplő országokról az alábbi adatokat kell beolvasni a memóriába, záróljelben szerepeltetjük az adatmezőt egyértelműen meghatározó JSONPath kifejezést (https://en.wikipedia.org/wiki/JSONPath).
 •	Országkód ($[*].cca3): egyedi háromjegyű azonosírtó belső ábrázoláshoz, az ISO 3166-1 alpha-3 nemzetközi szabványt követi (https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3).
 •	Ország hivatalos neve ($[*].name.official): az adott ország hivatalos neve.
@@ -19,9 +24,10 @@ A nyilvántartásban szereplő országokról az alábbi adatokat kell beolvasni 
 •	Gini-index ($[*].gini.*): egy mérőszám, ami az ország vagyoni eloszlásának egyenlőtlenségeit méri százalékban kifejezve (https://hu.wikipedia.org/wiki/Gini-index).
 •	Zászló ($[*].flags.png): az ország hivatalos zászlóját ábrázoló PNG formátumú bitkép elérését leíró URL.
 •	Hivatalos valuták: $[*].currencies
-o	Név ($[*].currencies.*.name): a valuta megnevezése.
-o	Rövidítés ($[*].currencies.*~): a valuta rövidítése.
-o	Devizajel ($[*].currencies.*.symbol): a valuta nemzetközileg alkalmazott devizajele.
+  o	Név ($[*].currencies.*.name): a valuta megnevezése.
+  o	Rövidítés ($[*].currencies.*~): a valuta rövidítése.
+  o	Devizajel ($[*].currencies.*.symbol): a valuta nemzetközileg alkalmazott devizajele.
+
  
 Az országokról összegyűjtött adatokat az alábbi képernyővázlaton bemutatott elrendezésben kell prezentálni a felhasználónak:
 •	A képernyőn az Ország neve címke alatti legördülőből (<select>) szabadon kiválasztható a megtekintendő ország.
