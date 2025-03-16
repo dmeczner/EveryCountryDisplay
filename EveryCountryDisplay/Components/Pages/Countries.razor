@@ -1,0 +1,156 @@
+﻿@page "/"
+@using EveryCountryDisplay.Models
+@using EveryCountryDisplay.Models.Pocos
+@inject ICountryRepository CountryRepository
+@rendermode InteractiveServer
+
+@if (countries == null)
+{
+    <Progress Class="mb-3">
+        <ProgressBar Type="ProgressType.StripedAndAnimated" Color="ProgressColor.Info" Width="100" />
+    </Progress>
+}
+else
+{
+    <div class="container" style="padding: 1rem">
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="countryName"><strong>Ország neve</strong></label>
+                <select class="form-control" 
+                        @onchange="@OnSelectCountryChanged" 
+                        tabindex="1">
+                    <option value="">-- Válassz országot --</option>
+                    @if (countries != null)
+                    {
+                        foreach (var c in countries)
+                        {
+                            <option value="@c.Cca3">@c?.Name?.Official</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="continents"><strong>Kontinens</strong></label>
+                <input id="continents" class="form-control"
+                       value="@SelectedCountry.Region"
+                       readonly tabindex="2" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="capital"><strong>Főváros</strong></label>
+                <input id="capital" class="form-control"
+                       value="@string.Join(", ", SelectedCountry.Capital ?? new List<string>())"
+                       readonly tabindex="3" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="giniIndex"><strong>Gini-index</strong></label>
+                @if (SelectedCountry.Gini != null && SelectedCountry.Gini.Any())
+                {
+                    var giniItem = SelectedCountry.Gini.Last();
+                    <div>
+                        <Progress Class="mb-3">
+                            <ProgressBar Color="ProgressColor.Success" Width="@giniItem.Value" />
+                        </Progress>
+                    </div>
+                }
+                else
+                {
+                    <input id="giniIndex" 
+                        class="form-control" 
+                        value="N/A" 
+                        readonly tabindex="4" />
+                }
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <label><strong>Zászló</strong></label>
+                @if (SelectedCountry.Flags?.Png is not null)
+                {
+                    <div>
+                        <img src="@SelectedCountry.Flags.Png" 
+                             alt="@SelectedCountry.Flags.Alt"
+                             class="img-fluid"
+                             tabindex="5" />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <h4 class="mt-4">Valuták</h4>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-striped" 
+                       tabindex="6">
+                    <thead>
+                        <tr>
+                            <th>Név</th>
+                            <th>Rövidítés</th>
+                            <th>Devizajel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (SelectedCountry.Currencies != null)
+                        {
+                            foreach (var currencyEntry in SelectedCountry.Currencies)
+                            {
+                                <tr>
+                                    <td>@currencyEntry.Value.Name</td>
+                                    <td>@currencyEntry.Key</td>
+                                    <td>@currencyEntry.Value.Symbol</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3">Nincsenek valutainformációk</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    public List<Country>? countries { get; set; }
+
+    private string? _selectedCca3;
+
+    private string? SelectedCca3
+    {
+        get => _selectedCca3;
+        set
+        {
+            if (_selectedCca3 != value)
+            {
+                _selectedCca3 = value;
+                _selectedCountry = countries?.FirstOrDefault(c => c.Cca3 == value) ?? new();
+            }
+        }
+    }
+
+    private Country _selectedCountry = new();
+    private Country SelectedCountry => _selectedCountry;
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await CountryRepository.GetCountries();
+    }
+
+    private void OnSelectCountryChanged(ChangeEventArgs e)
+    {
+        SelectedCca3 = e.Value?.ToString();
+    }
+}
